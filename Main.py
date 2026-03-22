@@ -129,14 +129,26 @@ if __name__ == "__main__":
     # X = torch.randint(0, 10000, (10000, 1)).float()
     # Y = (X % 2).float()
 
-    # < test case 1 >
+    # # < test case 1 >
+    # # if X > certain value output 1, else output 0 : success(able to achieve loss 0)
+    # threshold = 5
+    # X = torch.randint(0, threshold*2, (10000, 1)).float()
+    # Y = (X > threshold).float()
+    # for i in range(10):
+    #     print(X[i], Y[i])
+    # node_size = (1, 2, 1)
+    # optimizer = optim.SGD
+
+    # < test case 1_2 >
+        # all of them have gradient vanishing problem
     # if X > certain value output 1, else output 0 : success(able to achieve loss 0)
-    threshold = 5
+    threshold = 500
     X = torch.randint(0, threshold*2, (10000, 1)).float()
     Y = (X > threshold).float()
-    for i in range(10):
-        print(X[i], Y[i])
-    node_size = (1, 2, 1)
+    # for i in range(10):
+    #     print(X[i], Y[i])
+    node_size = (1, 1, 1)
+    optimizer = optim.SGD
 
     # # < test case 2 >
     # # Generate a set of normally distributed data, roughly in the range of -6 to 6 
@@ -153,11 +165,9 @@ if __name__ == "__main__":
     # Y = ((X > -1) & (X < 1)).float()
 
     # << settings >>
-
-    # 
     # < optimizer >
     # setting optimizer to SGD is easier to compare with the change in loss
-    optimizer = optim.SGD
+    # optimizer = optim.SGD
     # using adam optimizer will make the weight explode
     # optimizer = optim.Adam
 
