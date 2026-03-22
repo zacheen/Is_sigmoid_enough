@@ -124,11 +124,18 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
 if __name__ == "__main__":
     torch.manual_seed(42)
 
-    # < test case 1 >
-    # # if X is odd output 1, if X is even output 0 : failed(not able to achieve loss 0)
-    # # if X > 5000 output 1, else output 0 : success(able to achieve loss 0)
+    # < test case 0 >
+    # if X is odd output 1, if X is even output 0 : failed(not able to achieve loss 0)
     # X = torch.randint(0, 10000, (10000, 1)).float()
-    # Y = (X > 5000).float()
+    # Y = (X % 2).float()
+
+    # < test case 1 >
+    # if X > certain value output 1, else output 0 : success(able to achieve loss 0)
+    threshold = 5
+    X = torch.randint(0, threshold*2, (10000, 1)).float()
+    Y = (X > threshold).float()
+    for i in range(10):
+        print(X[i], Y[i])
     node_size = (1, 2, 1)
 
     # # < test case 2 >
@@ -139,11 +146,11 @@ if __name__ == "__main__":
     # # If X > 0 output 1.0, else output 0.0. This is a task that requires the model to output an absolute hard boundary (Hard 0/1)
     # Y = (X > 0).float()
     
-    # < test case 3 >
-    # Generate a definitive testcase: A strict Pulse wave (Hard Boundaries)
-    X = torch.linspace(-5, 5, 2000).view(-1, 1)
-    # Task: Output 1.0 only if X is between -1 and 1, else 0.0.
-    Y = ((X > -1) & (X < 1)).float()
+    # # < test case 3 >
+    # # Generate a definitive testcase: A strict Pulse wave (Hard Boundaries)
+    # X = torch.linspace(-5, 5, 2000).view(-1, 1)
+    # # Task: Output 1.0 only if X is between -1 and 1, else 0.0.
+    # Y = ((X > -1) & (X < 1)).float()
 
     # << settings >>
 
