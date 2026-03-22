@@ -73,7 +73,7 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
         loss_history_2, weight_mag_history_2 = train_and_track(model_2, X, Y, optimizer)
 
     # print final loss
-    print("Original Loss:", loss_history_ori[-1])
+    print("Original Loss     :", loss_history_ori[-1])
     print("ScaledSigmoid Loss:", loss_history_1[-1])
     if compare_type == 1:
         print("ScaledSigmoid Loss:", loss_history_2[-1])
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     # for i in range(10): # checked
     #     print(X[i], Y[i])
     node_size = (1, 1, 1)
-    optimizer = optim.SGD
+    optimizer = optim.Adam
 
     # # < test case 2 >
     # # Generate a set of normally distributed data, roughly in the range of -6 to 6 
