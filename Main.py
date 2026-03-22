@@ -144,11 +144,11 @@ if __name__ == "__main__":
     # 
     # < optimizer >
     # setting optimizer to SGD is easier to compare with the change in loss
-    # optimizer = optim.SGD(model.parameters(), lr=lr)
+    optimizer = optim.SGD
     # using adam optimizer will make the weight explode
-    optimizer = optim.Adam
+    # optimizer = optim.Adam
 
-    compare(X, Y, input_dim=1, hidden_dim=4, output_dim=1, compare_type=1)
+    compare(X, Y, input_dim=1, hidden_dim=4, output_dim=1, compare_type=1, optimizer=optimizer)
 
     # # ==========================================
     # # Appendix Experiment: Test replacing Sigmoid in an existing model
