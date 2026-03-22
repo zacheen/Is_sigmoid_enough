@@ -27,12 +27,17 @@ class SimpleNN(nn.Module):
 # ==========================================
 # 4. Training and Tracking Experiment Function
 # ==========================================
-def train_and_track(model, X, Y, optimizer, epochs=2000, lr=0.05):
+def train_and_track(model, X, Y, optimizer, epochs=6000, lr=None):
     """
     Train and return the loss and mean absolute value of weights per epoch, 
     to observe whether weights grow excessively.
     """
     criterion = nn.MSELoss()
+    if lr == None:
+        if optimizer == optim.SGD:
+            lr = 0.1
+        else:
+            lr = 0.01
     optimizer = optimizer(model.parameters(), lr=lr)
     
     loss_history = []
@@ -53,18 +58,18 @@ def train_and_track(model, X, Y, optimizer, epochs=2000, lr=0.05):
         
     return loss_history, weight_mag_history
 
-def compare(X, Y, input_dim, hidden_dim, output_dim, optimizer, compare_type = 0):
+def compare(X, Y, node_size, optimizer, compare_type = 0):
     # compare_type = 0: original vs scaled sigmoid
     # compare_type = 1: original vs scaled sigmoid vs scaled sigmoid
 
-    model_ori = SimpleNN(input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, activation_fn=nn.Sigmoid())
+    model_ori = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=nn.Sigmoid())
     loss_history_ori, weight_mag_history_ori = train_and_track(model_ori, X, Y, optimizer)
     
-    model_1 = SimpleNN(input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, activation_fn=ScaledSigmoid(scale=1.1, shift=-0.05))
+    model_1 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.1, shift=-0.05))
     loss_history_1, weight_mag_history_1 = train_and_track(model_1, X, Y, optimizer)
     
     if compare_type == 1:
-        model_2 = SimpleNN(input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, activation_fn=ScaledSigmoid(scale=2.0, shift=-0.5))
+        model_2 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=2.0, shift=-0.5))
         loss_history_2, weight_mag_history_2 = train_and_track(model_2, X, Y, optimizer)
 
     # print final loss
@@ -124,9 +129,7 @@ if __name__ == "__main__":
     # # if X > 5000 output 1, else output 0 : success(able to achieve loss 0)
     # X = torch.randint(0, 10000, (10000, 1)).float()
     # Y = (X > 5000).float()
-    input_dim = 1
-    hidden_dim = 4
-    output_dim = 1
+    node_size = (1, 2, 1)
 
     # # < test case 2 >
     # # Generate a set of normally distributed data, roughly in the range of -6 to 6 
@@ -151,7 +154,7 @@ if __name__ == "__main__":
     # using adam optimizer will make the weight explode
     # optimizer = optim.Adam
 
-    compare(X, Y, input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, compare_type=1, optimizer=optimizer)
+    compare(X, Y, node_size, optimizer, compare_type=1)
 
     # # ==========================================
     # # Appendix Experiment: Test replacing Sigmoid in an existing model
