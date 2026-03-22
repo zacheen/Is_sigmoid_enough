@@ -124,6 +124,9 @@ if __name__ == "__main__":
     # # if X > 5000 output 1, else output 0 : success(able to achieve loss 0)
     # X = torch.randint(0, 10000, (10000, 1)).float()
     # Y = (X > 5000).float()
+    input_dim = 1
+    hidden_dim = 4
+    output_dim = 1
 
     # # < test case 2 >
     # # Generate a set of normally distributed data, roughly in the range of -6 to 6 
@@ -148,7 +151,7 @@ if __name__ == "__main__":
     # using adam optimizer will make the weight explode
     # optimizer = optim.Adam
 
-    compare(X, Y, input_dim=1, hidden_dim=4, output_dim=1, compare_type=1, optimizer=optimizer)
+    compare(X, Y, input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, compare_type=1, optimizer=optimizer)
 
     # # ==========================================
     # # Appendix Experiment: Test replacing Sigmoid in an existing model
