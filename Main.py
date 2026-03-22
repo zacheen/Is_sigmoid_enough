@@ -27,7 +27,7 @@ class SimpleNN(nn.Module):
 # ==========================================
 # 4. Training and Tracking Experiment Function
 # ==========================================
-def train_and_track(model, X, Y, optimizer, epochs=6000, lr=None):
+def train_and_track(model, X, Y, optimizer, epochs=20000, lr=None):
     """
     Train and return the loss and mean absolute value of weights per epoch, 
     to observe whether weights grow excessively.
@@ -131,12 +131,13 @@ if __name__ == "__main__":
 
     # < test case 1 >
     # if X > certain value output 1, else output 0 : success(able to achieve loss 0)
-    threshold = 5
-    X = torch.randint(0, threshold*2, (10000, 1)).float()
+    threshold = 0.7
+    X = torch.rand(10000, 1).float()
     Y = (X > threshold).float()
-    for i in range(10):
-        print(X[i], Y[i])
-    node_size = (1, 2, 1)
+    # for i in range(10): # checked
+    #     print(X[i], Y[i])
+    node_size = (1, 1, 1)
+    optimizer = optim.SGD
 
     # # < test case 2 >
     # # Generate a set of normally distributed data, roughly in the range of -6 to 6 
@@ -157,7 +158,7 @@ if __name__ == "__main__":
     # 
     # < optimizer >
     # setting optimizer to SGD is easier to compare with the change in loss
-    optimizer = optim.SGD
+    # optimizer = optim.SGD
     # using adam optimizer will make the weight explode
     # optimizer = optim.Adam
 
