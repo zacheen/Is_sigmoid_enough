@@ -178,11 +178,9 @@ if __name__ == "__main__":
 
     # < test case 1 >
     # if X > certain value output 1, else output 0 : success(able to achieve loss 0)
-    threshold = 0.7
+    threshold = 0.5
     X = torch.rand(10000, 1).float()
     Y = (X > threshold).float()
-    # for i in range(10): # checked
-    #     print(X[i], Y[i])
     node_size = (1, 1, 1)
     optimizer = optim.SGD
 
@@ -209,7 +207,7 @@ if __name__ == "__main__":
     # using adam optimizer will make the weight explode
     # optimizer = optim.Adam
 
-    compare(X, Y, node_size, optimizer, compare_type=1)
+    compare(X, Y, node_size, optimizer, compare_type=0)
 
     # # ==========================================
     # # Appendix Experiment: Test replacing Sigmoid in an existing model
