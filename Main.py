@@ -131,7 +131,27 @@ if __name__ == "__main__":
 
     # < test case 1 >
     # if X > certain value output 1, else output 0 : success(able to achieve loss 0)
-    threshold = 0.7
+    # optimal solution 
+        # original sigmoid
+            # fc1's weight = 1, bias = -0.5
+            # fc2's weight = big_num, bias = -(1/2)*big_num 
+                # big_num should be large enough to make the loss close to 0
+        # scaled sigmoid
+            # fc1's weight = 1, bias = -0.5
+            # fc2's weight = big_num, bias = -(1/2)*big_num 
+                # 
+    # experiment result : 
+        # why the weight didn't explode?
+            # since the loss is already close to 0, the gradient vanished
+        # why Original Loss is lower ?
+            # Now the loss include the error lower than 1 "and the error exceed 1" 
+            # take scale=2.0, shift=-0.5 as an example, the output range is [-0.5, 1.5]
+            # thus when the x bigger then certain value x_to_big, the output would exceed 1
+                # thus from 0.5 ~ x_to_big it wants the weight to be bigger
+                # but  from x_to_big ~ 1   it wants the weight to be smaller
+            # Thus the gradient direction would be contradictory
+            
+    threshold = 0.5
     X = torch.rand(10000, 1).float()
     Y = (X > threshold).float()
     # for i in range(10): # checked
