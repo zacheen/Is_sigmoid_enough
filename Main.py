@@ -65,36 +65,39 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
     model_ori = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=nn.Sigmoid())
     loss_history_ori, weight_mag_history_ori = train_and_track(model_ori, X, Y, optimizer)
     
-    model_1 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.1, shift=-0.05))
+    model_1 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.01, shift=-0.005))
     loss_history_1, weight_mag_history_1 = train_and_track(model_1, X, Y, optimizer)
-    
-    if compare_type == 1:
-        model_2 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=2.0, shift=-0.5))
-        loss_history_2, weight_mag_history_2 = train_and_track(model_2, X, Y, optimizer)
+
+    model_2 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.05, shift=-0.025))
+    loss_history_2, weight_mag_history_2 = train_and_track(model_2, X, Y, optimizer)
+
+    model_3 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.1, shift=-0.05))
+    loss_history_3, weight_mag_history_3 = train_and_track(model_3, X, Y, optimizer)
 
     # print final loss
     print("Original Loss     :", loss_history_ori[-1])
     print("ScaledSigmoid Loss:", loss_history_1[-1])
-    if compare_type == 1:
-        print("ScaledSigmoid Loss:", loss_history_2[-1])
+    print("ScaledSigmoid Loss:", loss_history_2[-1])
+    print("ScaledSigmoid Loss:", loss_history_3[-1])
 
     # print the final weights and bias of the model
     print("Original Weights:",model_ori.fc1.weight.data, model_ori.fc2.weight.data)
     print("Original Bias:", model_ori.fc1.bias.data, model_ori.fc2.bias.data)
     print("ScaledSigmoid Weights:", model_1.fc1.weight.data, model_1.fc2.weight.data)
     print("ScaledSigmoid Bias:", model_1.fc1.bias.data, model_1.fc2.bias.data)
-    if compare_type == 1:
-        print("ScaledSigmoid Weights:", model_2.fc1.weight.data, model_2.fc2.weight.data)
-        print("ScaledSigmoid Bias:", model_2.fc1.bias.data, model_2.fc2.bias.data)
+    print("ScaledSigmoid Weights:", model_2.fc1.weight.data, model_2.fc2.weight.data)
+    print("ScaledSigmoid Bias:", model_2.fc1.bias.data, model_2.fc2.bias.data)
+    print("ScaledSigmoid Weights:", model_3.fc1.weight.data, model_3.fc2.weight.data)
+    print("ScaledSigmoid Bias:", model_3.fc1.bias.data, model_3.fc2.bias.data)
 
     # --- Plotting Result Graphs ---
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
     
     # First graph: Loss reduction speed
     ax1.plot(loss_history_ori, label="Original")
-    ax1.plot(loss_history_1, label="ScaledSigmoid(scale=1.1, shift=-0.05)")
-    if compare_type == 1:
-        ax1.plot(loss_history_2, label="ScaledSigmoid(scale=2.0, shift=-0.5)")
+    ax1.plot(loss_history_1, label="ScaledSigmoid(scale=1.01, shift=-0.005)")
+    ax1.plot(loss_history_2, label="ScaledSigmoid(scale=1.05, shift=-0.025)")
+    ax1.plot(loss_history_3, label="ScaledSigmoid(scale=1.1, shift=-0.05)")
     ax1.set_title("Training Loss Convergence")
     ax1.set_xlabel("Epochs")
     ax1.set_ylabel("MSE Loss")
