@@ -68,13 +68,13 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
     loss_history_ori, weight_mag_history_ori, weight_history_ori = train_and_track(model_ori, X, Y, optimizer)
     
     model_1 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.01, shift=-0.005))
-    loss_history_1, weight_mag_history_1 = train_and_track(model_1, X, Y, optimizer)
+    loss_history_1, weight_mag_history_1, weight_history_1 = train_and_track(model_1, X, Y, optimizer)
 
     model_2 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.05, shift=-0.025))
-    loss_history_2, weight_mag_history_2 = train_and_track(model_2, X, Y, optimizer)
+    loss_history_2, weight_mag_history_2, weight_history_2 = train_and_track(model_2, X, Y, optimizer)
 
     model_3 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.1, shift=-0.05))
-    loss_history_3, weight_mag_history_3 = train_and_track(model_3, X, Y, optimizer)
+    loss_history_3, weight_mag_history_3, weight_history_3 = train_and_track(model_3, X, Y, optimizer)
 
     # print final loss
     print("Original Loss     :", loss_history_ori[-1])
@@ -162,11 +162,9 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
         plt.show()
 
     plot_weight_history(weight_history_ori, "All Weights History - Original model")
-    plot_weight_history(weight_history_1, "All Weights History - ScaledSigmoid(scale=1.1, shift=-0.05)")
-    if compare_type == 1:
-        plot_weight_history(weight_history_2, "All Weights History - ScaledSigmoid(scale=2.0, shift=-0.5)")
-    
-
+    plot_weight_history(weight_history_1, "All Weights History - ScaledSigmoid(scale=1.01, shift=-0.005)")
+    plot_weight_history(weight_history_2, "All Weights History - ScaledSigmoid(scale=1.05, shift=-0.025)")
+    plot_weight_history(weight_history_3, "All Weights History - ScaledSigmoid(scale=1.1, shift=-0.05)")
     
 # ==========================================
 # Main Experiment Execution Section
@@ -207,7 +205,7 @@ if __name__ == "__main__":
     # for i in range(10): # checked
     #     print(X[i], Y[i])
     node_size = (1, 1, 1)
-    optimizer = optim.Adam
+    optimizer = optim.SGD
 
     # # < test case 2 >
     # # Generate a set of normally distributed data, roughly in the range of -6 to 6 
