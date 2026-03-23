@@ -198,22 +198,22 @@ if __name__ == "__main__":
                 # thus from 0.5 ~ x_to_big it wants the weight to be bigger
                 # but  from x_to_big ~ 1   it wants the weight to be smaller
             # Thus the gradient direction would be contradictory
-            
+    # threshold = 0.5
+    # X = torch.rand(10000, 1).float()
+    # Y = (X > threshold).float()
+    # # for i in range(10): # checked
+    # #     print(X[i], Y[i])
+    # node_size = (1, 1, 1)
+    # optimizer = optim.SGD
+
+    # < test case 2 >
+    # this is the same as test case 1 but with random data
+    # but it avoid stuck in loss = 0.25 for too long
     threshold = 0.5
-    X = torch.rand(10000, 1).float()
+    X = torch.randn(10000, 1) + threshold
     Y = (X > threshold).float()
-    # for i in range(10): # checked
-    #     print(X[i], Y[i])
     node_size = (1, 1, 1)
     optimizer = optim.SGD
-
-    # # < test case 2 >
-    # # Generate a set of normally distributed data, roughly in the range of -6 to 6 
-    #     # to fix the gradient vanishing problem caused by raw values as large as 10000)
-    # X = torch.randn(2000, 1) * 2
-    # print(len(X))
-    # # If X > 0 output 1.0, else output 0.0. This is a task that requires the model to output an absolute hard boundary (Hard 0/1)
-    # Y = (X > 0).float()
     
     # # < test case 3 >
     # # Generate a definitive testcase: A strict Pulse wave (Hard Boundaries)
