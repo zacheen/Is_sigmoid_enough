@@ -42,6 +42,7 @@ def train_and_track(model, X, Y, optimizer, epochs=20000, lr=None):
     
     loss_history = []
     weight_mag_history = []
+    weight_history = [[], []]
     for epoch in range(epochs):
         optimizer.zero_grad()
         outputs = model(X)
@@ -55,22 +56,23 @@ def train_and_track(model, X, Y, optimizer, epochs=20000, lr=None):
         # Record weight magnitude (using FC2's mean absolute weight as an example)
         fc2_weight_mag = model.fc2.weight.abs().mean().item()
         weight_mag_history.append(fc2_weight_mag)
-        
-    return loss_history, weight_mag_history
+        weight_history[0].append((model.fc1.weight.data.clone(), model.fc1.bias.data.clone()))
+        weight_history[1].append((model.fc2.weight.data.clone(), model.fc2.bias.data.clone()))
+    return loss_history, weight_mag_history, weight_history
 
 def compare(X, Y, node_size, optimizer, compare_type = 0):
     # compare_type = 0: original vs scaled sigmoid
     # compare_type = 1: original vs scaled sigmoid vs scaled sigmoid
 
     model_ori = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=nn.Sigmoid())
-    loss_history_ori, weight_mag_history_ori = train_and_track(model_ori, X, Y, optimizer)
+    loss_history_ori, weight_mag_history_ori, weight_history_ori = train_and_track(model_ori, X, Y, optimizer)
     
     model_1 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=1.1, shift=-0.05))
-    loss_history_1, weight_mag_history_1 = train_and_track(model_1, X, Y, optimizer)
+    loss_history_1, weight_mag_history_1, weight_history_1 = train_and_track(model_1, X, Y, optimizer)
     
     if compare_type == 1:
         model_2 = SimpleNN(input_dim=node_size[0], hidden_dim=node_size[1], output_dim=node_size[2], activation_fn=ScaledSigmoid(scale=2.0, shift=-0.5))
-        loss_history_2, weight_mag_history_2 = train_and_track(model_2, X, Y, optimizer)
+        loss_history_2, weight_mag_history_2, weight_history_2 = train_and_track(model_2, X, Y, optimizer)
 
     # print final loss
     print("Original Loss:", loss_history_ori[-1])
@@ -88,7 +90,7 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
         print("ScaledSigmoid Bias:", model_2.fc2.bias.data)
 
     # --- Plotting Result Graphs ---
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 10))
     
     # First graph: Loss reduction speed
     ax1.plot(loss_history_ori, label="Original")
@@ -115,6 +117,51 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
     
     plt.tight_layout()
     plt.show()
+
+    # --- Plotting Detailed Weight Histories ---
+    def plot_weight_history(history, title):
+        fig, ax = plt.subplots(figsize=(10, 5))
+        
+        # history[0] -> fc1: list of (weight, bias)
+        # history[1] -> fc2: list of (weight, bias)
+        
+        fc1_w = [h[0].flatten().cpu().numpy() for h in history[0]]
+        fc1_b = [h[1].flatten().cpu().numpy() for h in history[0]]
+        fc2_w = [h[0].flatten().cpu().numpy() for h in history[1]]
+        fc2_b = [h[1].flatten().cpu().numpy() for h in history[1]]
+        
+        epochs_range = range(len(fc1_w))
+        
+        # Plot each weight/bias parameter
+        # fc1
+        num_fc1_w = len(fc1_w[0])
+        for i in range(num_fc1_w):
+            ax.plot(epochs_range, [w[i] for w in fc1_w], label=f'FC1 W[{i}]', linestyle='--')
+        num_fc1_b = len(fc1_b[0])
+        for i in range(num_fc1_b):
+            ax.plot(epochs_range, [b[i] for b in fc1_b], label=f'FC1 B[{i}]', linestyle=':')
+            
+        # fc2
+        num_fc2_w = len(fc2_w[0])
+        for i in range(num_fc2_w):
+            ax.plot(epochs_range, [w[i] for w in fc2_w], label=f'FC2 W[{i}]', linestyle='-')
+        num_fc2_b = len(fc2_b[0])
+        for i in range(num_fc2_b):
+            ax.plot(epochs_range, [b[i] for b in fc2_b], label=f'FC2 B[{i}]', linestyle='-.')
+            
+        ax.set_title(title)
+        ax.set_xlabel("Epochs")
+        ax.set_ylabel("Weight Value")
+        # Optional: place legend outside if there are many lines
+        ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        ax.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+    plot_weight_history(weight_history_ori, "All Weights History - Original model")
+    plot_weight_history(weight_history_1, "All Weights History - ScaledSigmoid(scale=1.1, shift=-0.05)")
+    if compare_type == 1:
+        plot_weight_history(weight_history_2, "All Weights History - ScaledSigmoid(scale=2.0, shift=-0.5)")
     
 
     
