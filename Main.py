@@ -79,13 +79,13 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
         print("ScaledSigmoid Loss:", loss_history_2[-1])
 
     # print the final weights and bias of the model
-    print("Original Weights:", model_ori.fc2.weight.data)
-    print("Original Bias:", model_ori.fc2.bias.data)
-    print("ScaledSigmoid Weights:", model_1.fc2.weight.data)
-    print("ScaledSigmoid Bias:", model_1.fc2.bias.data)
+    print("Original Weights:",model_ori.fc1.weight.data, model_ori.fc2.weight.data)
+    print("Original Bias:", model_ori.fc1.bias.data, model_ori.fc2.bias.data)
+    print("ScaledSigmoid Weights:", model_1.fc1.weight.data, model_1.fc2.weight.data)
+    print("ScaledSigmoid Bias:", model_1.fc1.bias.data, model_1.fc2.bias.data)
     if compare_type == 1:
-        print("ScaledSigmoid Weights:", model_2.fc2.weight.data)
-        print("ScaledSigmoid Bias:", model_2.fc2.bias.data)
+        print("ScaledSigmoid Weights:", model_2.fc1.weight.data, model_2.fc2.weight.data)
+        print("ScaledSigmoid Bias:", model_2.fc1.bias.data, model_2.fc2.bias.data)
 
     # --- Plotting Result Graphs ---
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
