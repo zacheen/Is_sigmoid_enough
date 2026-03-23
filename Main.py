@@ -107,9 +107,9 @@ def compare(X, Y, node_size, optimizer, compare_type = 0):
     
     # Second graph: Weight magnitude changes
     ax2.plot(weight_mag_history_ori, label="Original")
-    ax2.plot(weight_mag_history_1, label="ScaledSigmoid(scale=1.1, shift=-0.05)")
-    if compare_type == 1:
-        ax2.plot(weight_mag_history_2, label="ScaledSigmoid(scale=2.0, shift=-0.5)")
+    ax2.plot(weight_mag_history_1, label="ScaledSigmoid(scale=1.01, shift=-0.005)")
+    ax2.plot(weight_mag_history_2, label="ScaledSigmoid(scale=1.05, shift=-0.025)")
+    ax2.plot(weight_mag_history_3, label="ScaledSigmoid(scale=1.1, shift=-0.05)")
     ax2.set_title("Weight Magnitude Over Time (FC2 Layer)")
     ax2.set_xlabel("Epochs")
     ax2.set_ylabel("Mean Absolute Weight")
