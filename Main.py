@@ -206,20 +206,22 @@ if __name__ == "__main__":
     # node_size = (1, 1, 1)
     # optimizer = optim.SGD
 
-    # < test case 2 >
-    # this is the same as test case 1 but with random data
-    # but it avoid stuck in loss = 0.25 for too long
-    threshold = 0.5
-    X = torch.randn(10000, 1) + threshold
-    Y = (X > threshold).float()
-    node_size = (1, 1, 1)
-    optimizer = optim.SGD
+    # # < test case 2 >
+    # # this is the same as test case 1 but with random data
+    # # but it avoid stuck in loss = 0.25 for too long
+    # threshold = 0.5
+    # X = torch.randn(10000, 1) + threshold
+    # Y = (X > threshold).float()
+    # node_size = (1, 1, 1)
+    # optimizer = optim.SGD
     
-    # # < test case 3 >
-    # # Generate a definitive testcase: A strict Pulse wave (Hard Boundaries)
-    # X = torch.linspace(-5, 5, 2000).view(-1, 1)
-    # # Task: Output 1.0 only if X is between -1 and 1, else 0.0.
-    # Y = ((X > -1) & (X < 1)).float()
+    # < test case 3 >
+    # Generate a definitive testcase: A strict Pulse wave (Hard Boundaries)
+    X = torch.linspace(-5, 5, 2000).view(-1, 1)
+    # Task: Output 1.0 only if X is between -1 and 1, else 0.0.
+    Y = ((X > -1) & (X < 1)).float()
+    node_size = (1, 3, 1)
+    optimizer = optim.Adam
 
     # << settings >>
 
