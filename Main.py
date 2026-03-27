@@ -27,7 +27,7 @@ class SimpleNN(nn.Module):
 # ==========================================
 # 4. Training and Tracking Experiment Function
 # ==========================================
-def train_and_track(model, X, Y, optimizer, epochs=20000, lr=None):
+def train_and_track(model, X, Y, optimizer, epochs=50000, lr=None):
     """
     Train and return the loss and mean absolute value of weights per epoch, 
     to observe whether weights grow excessively.
@@ -256,10 +256,10 @@ if __name__ == "__main__":
     # Staircase: alternating 0/1/0/1 with 3 boundaries at x=-2, 0, 2
     # Two disjoint "on" regions (vs test case 3's single pulse)
     # More boundaries = more saturation transitions = harder optimization
-    # X = torch.linspace(-5, 5, 2000).view(-1, 1)
-    # Y = (((X >= -2) & (X < 0)) | (X >= 2)).float()
-    # node_size = (1, 6, 1)
-    # optimizer = optim.Adam
+    X = torch.linspace(-5, 5, 2000).view(-1, 1)
+    Y = (((X >= -2) & (X < 0)) | (X >= 2)).float()
+    node_size = (1, 6, 1)
+    optimizer = optim.Adam
 
     # < test case 7 >
     # 2D Checkerboard: continuous-domain XOR over dense 2D grid
