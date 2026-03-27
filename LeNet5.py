@@ -1,3 +1,9 @@
+# Conclusion:
+#     If the parameters do not explode, there is little difference in accuracy,
+#         Since the node is not forced to generate an output of 1 in the middle layer.
+#     However, the training speed is faster.
+#         Since the node output locked in the range where the gradient is not flat
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
