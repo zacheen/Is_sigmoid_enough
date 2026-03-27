@@ -181,6 +181,6 @@ if __name__ == "__main__":
 
     # Number of epochs — 10 is enough to see convergence differences
     # Increase to 20-30 for more detailed comparison
-    EPOCHS = 10
+    EPOCHS = 30
 
     results = compare(train_loader, test_loader, epochs=EPOCHS)
