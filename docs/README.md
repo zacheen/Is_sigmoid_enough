@@ -3,15 +3,20 @@
 ## Quick Start
 
 ```bash
+# FC network experiments (threshold, pulse wave)
 python Main.py
+
+# CNN experiment (LeNet-5 on MNIST)
+python LeNet5.py
 ```
 
-**Requirements:** `torch`, `matplotlib`
+**Requirements:** `torch`, `matplotlib`, `torchvision`
 
 ## Project Structure
 
 ```
-├── Main.py              # Entry point — network definition, training loop, comparison & plotting
+├── Main.py              # FC network experiments — training loop, comparison & plotting
+├── LeNet5.py            # CNN experiment — LeNet-5 on MNIST, sigmoid vs ScaledSigmoid
 ├── ScaledSigmoid.py     # Custom activation: scale * sigmoid(x) + shift
 ├── util.py              # Utility to replace sigmoid in existing models
 ├── record/              # Saved experiment result screenshots (PNGs)
@@ -36,7 +41,8 @@ python Main.py
 
 - **ScaledSigmoid**: `scale * sigmoid(x) + shift` — extends sigmoid output range to reduce boundary saturation
 - **Comparison framework**: Trains original sigmoid and multiple ScaledSigmoid variants side-by-side, plotting loss convergence and weight magnitude
-- **Test cases**: Defined in `Main.py` `__main__` block — toggle by commenting/uncommenting
+- **Test cases**: FC cases defined in `Main.py` `__main__` block (toggle by commenting/uncommenting); CNN case in `LeNet5.py`
+- **LeNet-5**: Classic CNN with all-sigmoid activations (~60K params), trained on MNIST — extends comparison to convolutional architectures
 
 ## Configuration
 
