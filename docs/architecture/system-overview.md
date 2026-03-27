@@ -56,8 +56,12 @@ This is a PyTorch-based experimental framework for comparing the standard `nn.Si
 | 1 | Threshold classification (X > 0.5) | Uniform [0, 1) | (1, 1, 1) | Success — notes on contradictory gradients with ScaledSigmoid |
 | 2 | Threshold classification (X > 0.5) | Normal centered at 0.5 | (1, 1, 1) | Avoids stuck loss at 0.25 |
 | 3 | Pulse wave (1 if -1 < X < 1) | Linspace [-5, 5] | (1, 3, 1) | Active test case — requires multi-node hidden layer |
-| 4 | MNIST digit classification (CNN) | MNIST dataset (28×28 grayscale) | LeNet-5 | Complete — too simple, ~97% for all variants |
-| 5 | CIFAR-10 classification (CNN) | CIFAR-10 dataset (32×32 RGB) | VGG-style (4 conv + 2 FC) | Active — deeper network on harder task |
+| 4 | XOR (2D non-linear separability) | 4 discrete points {0,1}² | (2, 2, 1) | Forces saturation at all 4 outputs, non-linear boundary |
+| 5 | Decimal→Binary encoding (multi-output) | Integers 0-7 | (1, 8, 3) | 3 output sigmoids must independently saturate |
+| 6 | Staircase (multiple disjoint pulses) | Linspace [-5, 5] | (1, 6, 1) | 3 boundaries, 2 disjoint on-regions |
+| 7 | 2D Checkerboard (continuous XOR) | 50×50 grid over [0, 2]² | (2, 4, 1) | Dense 2D XOR, 2500 points |
+| — | MNIST digit classification (CNN) | MNIST dataset (28×28 grayscale) | LeNet-5 | Complete — too simple, ~97% for all variants |
+| — | CIFAR-10 classification (CNN) | CIFAR-10 dataset (32×32 RGB) | VGG-style (4 conv + 2 FC) | Active — deeper network on harder task |
 
 ## Output Artifacts
 

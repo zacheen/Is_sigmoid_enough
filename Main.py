@@ -215,13 +215,63 @@ if __name__ == "__main__":
     # node_size = (1, 1, 1)
     # optimizer = optim.SGD
     
-    # < test case 3 >
-    # Generate a definitive testcase: A strict Pulse wave (Hard Boundaries)
-    X = torch.linspace(-5, 5, 2000).view(-1, 1)
-    # Task: Output 1.0 only if X is between -1 and 1, else 0.0.
-    Y = ((X > -1) & (X < 1)).float()
-    node_size = (1, 3, 1)
+    # # < test case 3 >
+    # # Generate a definitive testcase: A strict Pulse wave (Hard Boundaries)
+    # X = torch.linspace(-5, 5, 2000).view(-1, 1)
+    # # Task: Output 1.0 only if X is between -1 and 1, else 0.0.
+    # Y = ((X > -1) & (X < 1)).float()
+    # node_size = (1, 3, 1)
+    # optimizer = optim.Adam
+
+    # < test case 4 >
+    # XOR: classic non-linearly separable problem
+    # 2D input, must output 0 or 1 at all 4 corners
+    # Hidden layer must create two linear separations in 2D and combine them
+    # Forces saturation: all outputs are exactly 0 or 1, non-linear boundary
+    X = torch.tensor([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
+    Y = torch.tensor([[0.0], [1.0], [1.0], [0.0]])
+    node_size = (2, 2, 1)
     optimizer = optim.Adam
+
+    # < test case 5 >
+    # Decimal to 3-bit binary encoding (multi-output saturation)
+    # Input: 0-7, Output: 3-bit binary representation
+    # THREE output sigmoids must independently saturate to 0/1
+    # Each bit has a different alternating pattern (bit0: every 1, bit1: every 2, bit2: every 4)
+    # X = torch.arange(0, 8).float().view(-1, 1)
+    # Y = torch.tensor([
+    #     [0, 0, 0],  # 0
+    #     [0, 0, 1],  # 1
+    #     [0, 1, 0],  # 2
+    #     [0, 1, 1],  # 3
+    #     [1, 0, 0],  # 4
+    #     [1, 0, 1],  # 5
+    #     [1, 1, 0],  # 6
+    #     [1, 1, 1],  # 7
+    # ]).float()
+    # node_size = (1, 8, 3)
+    # optimizer = optim.Adam
+
+    # < test case 6 >
+    # Staircase: alternating 0/1/0/1 with 3 boundaries at x=-2, 0, 2
+    # Two disjoint "on" regions (vs test case 3's single pulse)
+    # More boundaries = more saturation transitions = harder optimization
+    # X = torch.linspace(-5, 5, 2000).view(-1, 1)
+    # Y = (((X >= -2) & (X < 0)) | (X >= 2)).float()
+    # node_size = (1, 6, 1)
+    # optimizer = optim.Adam
+
+    # < test case 7 >
+    # 2D Checkerboard: continuous-domain XOR over dense 2D grid
+    # Output 1 in top-left & bottom-right quadrants, 0 elsewhere
+    # Unlike discrete XOR (4 points), must generalize saturation across 2500 points
+    # n = 50
+    # x1, x2 = torch.linspace(0, 2, n), torch.linspace(0, 2, n)
+    # grid_x1, grid_x2 = torch.meshgrid(x1, x2, indexing='ij')
+    # X = torch.stack([grid_x1.flatten(), grid_x2.flatten()], dim=1)  # (2500, 2)
+    # Y = (((X[:, 0] < 1) & (X[:, 1] >= 1)) | ((X[:, 0] >= 1) & (X[:, 1] < 1))).float().view(-1, 1)
+    # node_size = (2, 4, 1)
+    # optimizer = optim.Adam
 
     # << settings >>
 
