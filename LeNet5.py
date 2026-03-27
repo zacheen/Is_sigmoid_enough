@@ -173,7 +173,7 @@ def compare(train_loader, test_loader, epochs=10):
 # Main
 # ==========================================
 if __name__ == "__main__":
-    torch.manual_seed(42)
+    torch.manual_seed(7)
 
     print("Loading MNIST dataset...")
     train_loader, test_loader = get_mnist_loaders(batch_size=256)
@@ -181,6 +181,6 @@ if __name__ == "__main__":
 
     # Number of epochs — 10 is enough to see convergence differences
     # Increase to 20-30 for more detailed comparison
-    EPOCHS = 30
+    EPOCHS = 100
 
     results = compare(train_loader, test_loader, epochs=EPOCHS)
