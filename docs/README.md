@@ -6,8 +6,11 @@
 # FC network experiments (threshold, pulse wave)
 python Main.py
 
-# CNN experiment (LeNet-5 on MNIST)
+# CNN experiment (LeNet-5 on MNIST — simple baseline)
 python LeNet5.py
+
+# CNN experiment (VGG-style on CIFAR-10 — deeper, harder task)
+python VggCifar10.py
 ```
 
 **Requirements:** `torch`, `matplotlib`, `torchvision`
@@ -16,7 +19,8 @@ python LeNet5.py
 
 ```
 ├── Main.py              # FC network experiments — training loop, comparison & plotting
-├── LeNet5.py            # CNN experiment — LeNet-5 on MNIST, sigmoid vs ScaledSigmoid
+├── LeNet5.py            # CNN experiment — LeNet-5 on MNIST (simple baseline)
+├── VggCifar10.py        # CNN experiment — VGG-style on CIFAR-10 (deeper, harder task)
 ├── ScaledSigmoid.py     # Custom activation: scale * sigmoid(x) + shift
 ├── util.py              # Utility to replace sigmoid in existing models
 ├── record/              # Saved experiment result screenshots (PNGs)
@@ -42,7 +46,8 @@ python LeNet5.py
 - **ScaledSigmoid**: `scale * sigmoid(x) + shift` — extends sigmoid output range to reduce boundary saturation
 - **Comparison framework**: Trains original sigmoid and multiple ScaledSigmoid variants side-by-side, plotting loss convergence and weight magnitude
 - **Test cases**: FC cases defined in `Main.py` `__main__` block (toggle by commenting/uncommenting); CNN case in `LeNet5.py`
-- **LeNet-5**: Classic CNN with all-sigmoid activations (~60K params), trained on MNIST — extends comparison to convolutional architectures
+- **LeNet-5**: Classic CNN with all-sigmoid activations (~60K params), trained on MNIST — baseline CNN comparison (too simple to show differences)
+- **VGG-style CNN**: Deeper 4-conv + 2-FC network (~550K params) on CIFAR-10 — harder task amplifies vanishing gradient differences
 
 ## Configuration
 

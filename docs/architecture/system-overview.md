@@ -27,14 +27,23 @@ This is a PyTorch-based experimental framework for comparing the standard `nn.Si
   2. Weight magnitude over time comparison
   3. Per-parameter weight history for each model
 
-### LeNet-5 CNN (`LeNet5.py`) — Planned
+### LeNet-5 CNN (`LeNet5.py`)
 - Classic CNN architecture originally designed with sigmoid activations
-- Structure: `Conv2d(1,6,5) → Sigmoid → AvgPool → Conv2d(6,16,5) → Sigmoid → AvgPool → FC(256,120) → Sigmoid → FC(120,84) → Sigmoid → FC(84,10)`
+- Structure: `Conv2d(1,6,5) → Sigmoid → AvgPool → Conv2d(6,16,5) → Sigmoid → AvgPool → FC(400,120) → Sigmoid → FC(120,84) → Sigmoid → FC(84,10)`
 - ~60K parameters — trains in minutes on CPU
 - Dataset: MNIST (28×28 grayscale handwritten digits, 10 classes)
 - Loss: CrossEntropyLoss (classification task, unlike the MSE used in SimpleNN)
 - All hidden activations are `nn.Sigmoid`, making it a direct target for `replace_sigmoid_with_modified()`
 - Extends the experiment from simple FC networks to convolutional architectures
+
+### VGG-style CNN (`VggCifar10.py`)
+- Small VGG-style architecture designed to stress-test sigmoid in a deeper network
+- Structure: `Conv(3,32,3) → Sigmoid → Conv(32,32,3) → Sigmoid → MaxPool → Dropout → Conv(32,64,3) → Sigmoid → Conv(64,64,3) → Sigmoid → MaxPool → Dropout → FC(4096,256) → Sigmoid → Dropout → FC(256,10)`
+- ~550K parameters — still trains in minutes on CPU
+- Dataset: CIFAR-10 (32×32 RGB, 10 classes) with data augmentation (random flip, random crop)
+- Loss: CrossEntropyLoss
+- 4 conv + 2 FC layers — deep enough for vanishing gradient to matter with sigmoid
+- CIFAR-10 is significantly harder than MNIST, so differences between sigmoid and ScaledSigmoid should be more pronounced
 
 ### Utility (`util.py`)
 - `replace_sigmoid_with_modified()`: Recursively replaces all `nn.Sigmoid` modules in an existing model with `ScaledSigmoid` — useful for retrofitting pre-trained models
@@ -47,7 +56,8 @@ This is a PyTorch-based experimental framework for comparing the standard `nn.Si
 | 1 | Threshold classification (X > 0.5) | Uniform [0, 1) | (1, 1, 1) | Success — notes on contradictory gradients with ScaledSigmoid |
 | 2 | Threshold classification (X > 0.5) | Normal centered at 0.5 | (1, 1, 1) | Avoids stuck loss at 0.25 |
 | 3 | Pulse wave (1 if -1 < X < 1) | Linspace [-5, 5] | (1, 3, 1) | Active test case — requires multi-node hidden layer |
-| 4 | MNIST digit classification (CNN) | MNIST dataset (28×28 grayscale) | LeNet-5 | Planned — CNN-level comparison |
+| 4 | MNIST digit classification (CNN) | MNIST dataset (28×28 grayscale) | LeNet-5 | Complete — too simple, ~97% for all variants |
+| 5 | CIFAR-10 classification (CNN) | CIFAR-10 dataset (32×32 RGB) | VGG-style (4 conv + 2 FC) | Active — deeper network on harder task |
 
 ## Output Artifacts
 
@@ -57,7 +67,9 @@ This is a PyTorch-based experimental framework for comparing the standard `nn.Si
 ## Running the Code
 
 ```bash
-python Main.py
+python Main.py        # FC network experiments (threshold, pulse wave)
+python LeNet5.py      # LeNet-5 on MNIST (simple, fast)
+python VggCifar10.py  # VGG-style on CIFAR-10 (deeper, harder)
 ```
 
 Requires: `torch`, `matplotlib`, `torchvision` (for MNIST/LeNet-5 experiment)
