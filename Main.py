@@ -238,19 +238,19 @@ if __name__ == "__main__":
     # Input: 0-7, Output: 3-bit binary representation
     # THREE output sigmoids must independently saturate to 0/1
     # Each bit has a different alternating pattern (bit0: every 1, bit1: every 2, bit2: every 4)
-    # X = torch.arange(0, 8).float().view(-1, 1)
-    # Y = torch.tensor([
-    #     [0, 0, 0],  # 0
-    #     [0, 0, 1],  # 1
-    #     [0, 1, 0],  # 2
-    #     [0, 1, 1],  # 3
-    #     [1, 0, 0],  # 4
-    #     [1, 0, 1],  # 5
-    #     [1, 1, 0],  # 6
-    #     [1, 1, 1],  # 7
-    # ]).float()
-    # node_size = (1, 8, 3)
-    # optimizer = optim.Adam
+    X = torch.arange(0, 8).float().view(-1, 1)
+    Y = torch.tensor([
+        [0, 0, 0],  # 0
+        [0, 0, 1],  # 1
+        [0, 1, 0],  # 2
+        [0, 1, 1],  # 3
+        [1, 0, 0],  # 4
+        [1, 0, 1],  # 5
+        [1, 1, 0],  # 6
+        [1, 1, 1],  # 7
+    ]).float()
+    node_size = (1, 8, 3)
+    optimizer = optim.Adam
 
     # < test case 6 >
     # Staircase: alternating 0/1/0/1 with 3 boundaries at x=-2, 0, 2
