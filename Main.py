@@ -223,15 +223,15 @@ if __name__ == "__main__":
     # node_size = (1, 3, 1)
     # optimizer = optim.Adam
 
-    # < test case 4 >
-    # XOR: classic non-linearly separable problem
-    # 2D input, must output 0 or 1 at all 4 corners
-    # Hidden layer must create two linear separations in 2D and combine them
-    # Forces saturation: all outputs are exactly 0 or 1, non-linear boundary
-    X = torch.tensor([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
-    Y = torch.tensor([[0.0], [1.0], [1.0], [0.0]])
-    node_size = (2, 2, 1)
-    optimizer = optim.Adam
+    # # < test case 4 > can actually replace test case 3
+    # # XOR: classic non-linearly separable problem
+    # # 2D input, must output 0 or 1 at all 4 corners
+    # # Hidden layer must create two linear separations in 2D and combine them
+    # # Forces saturation: all outputs are exactly 0 or 1, non-linear boundary
+    # X = torch.tensor([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
+    # Y = torch.tensor([[0.0], [1.0], [1.0], [0.0]])
+    # node_size = (2, 2, 1)
+    # optimizer = optim.Adam
 
     # < test case 5 >
     # Decimal to 3-bit binary encoding (multi-output saturation)
