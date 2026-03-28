@@ -11,6 +11,10 @@ python LeNet5.py
 
 # CNN experiment (VGG-style on CIFAR-10 — deeper, harder task)
 python VggCifar10.py
+
+# LSTM experiments (ScaledSigmoid in gate functions)
+python LstmSeqMnist.py  # Sequential MNIST, ~50 min on CPU
+python LstmCharGen.py   # Shakespeare text generation, ~60 min on CPU
 ```
 
 **Requirements:** `torch`, `matplotlib`, `torchvision`
@@ -22,6 +26,9 @@ python VggCifar10.py
 ├── LeNet5.py            # CNN experiment — LeNet-5 on MNIST (simple baseline)
 ├── VggCifar10.py        # CNN experiment — VGG-style on CIFAR-10 (deeper, harder task)
 ├── ScaledSigmoid.py     # Custom activation: scale * sigmoid(x) + shift
+├── CustomLSTM.py        # Custom LSTM cell with ScaledSigmoid gates (shared module)
+├── LstmSeqMnist.py     # LSTM experiment — Sequential MNIST (28 time steps)
+├── LstmCharGen.py      # LSTM experiment — Shakespeare character generation
 ├── util.py              # Utility to replace sigmoid in existing models
 ├── record/              # Saved experiment result screenshots (PNGs)
 ├── res/                 # Research resources (ML proposal PDF, analytical graphs)
@@ -49,6 +56,7 @@ python VggCifar10.py
   - FC networks: Cases 0-3 (threshold, pulse wave) in `Main.py` — simple saturation patterns
   - **New FC networks: Cases 4-7** (XOR, binary encoding, staircase, checkerboard) in `Main.py` — diverse saturation geometries
   - CNNs: LeNet-5 on MNIST, VGG-style on CIFAR-10
+  - **LSTMs**: Sequential MNIST, Shakespeare text generation — ScaledSigmoid in gate functions (not activation)
 - **LeNet-5**: Classic CNN with all-sigmoid activations (~60K params), trained on MNIST — baseline CNN comparison (too simple to show differences)
 - **VGG-style CNN**: Deeper 4-conv + 2-FC network (~550K params) on CIFAR-10 — harder task amplifies vanishing gradient differences
 
@@ -72,6 +80,15 @@ Run LeNet-5 or VGG experiments independently:
 ```bash
 python LeNet5.py    # ~2-3 min on CPU, 100 epochs default
 python VggCifar10.py # ~15-20 min on CPU, 30 epochs default
+```
+
+### LSTM Experiments
+
+Tests ScaledSigmoid in LSTM **gate functions** (input/forget/output gates) — fundamentally different from using it as an activation. Uses a custom LSTM cell (`CustomLSTM.py`) since PyTorch's `nn.LSTM` hardcodes sigmoid in C++.
+
+```bash
+python LstmSeqMnist.py  # ~45-60 min on CPU, 50 epochs
+python LstmCharGen.py   # ~50-70 min on CPU, 30 epochs (downloads Shakespeare text)
 ```
 
 ## Configuration

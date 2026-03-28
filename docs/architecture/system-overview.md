@@ -45,6 +45,29 @@ This is a PyTorch-based experimental framework for comparing the standard `nn.Si
 - 4 conv + 2 FC layers — deep enough for vanishing gradient to matter with sigmoid
 - CIFAR-10 is significantly harder than MNIST, so differences between sigmoid and ScaledSigmoid should be more pronounced
 
+### Custom LSTM (`CustomLSTM.py`)
+- Custom LSTM implementation that replaces hardcoded sigmoid gates with ScaledSigmoid
+- PyTorch's `nn.LSTM` uses sigmoid internally in C++ — cannot be replaced via module swapping
+- `ScaledSigmoidLSTMCell`: single cell with `scale * sigmoid(x) + shift` for input/forget/output gates, tanh for cell candidate
+- `CustomLSTM`: multi-layer wrapper with same interface as `nn.LSTM(batch_first=True)`
+- When `scale=1.0, shift=0.0`, behaves identically to standard LSTM
+- **Key difference from CNN/FC experiments**: sigmoid here is a gate controller [0,1], not an activation function — extending beyond [0,1] may destabilize gating
+
+### Sequential MNIST LSTM (`LstmSeqMnist.py`)
+- Feeds MNIST as 28 time steps of 28-pixel rows into CustomLSTM
+- Model: `CustomLSTM(28, 128, 1 layer) → Linear(128, 10)`
+- ~50 epochs, Adam, CrossEntropyLoss, batch_size=128
+- ~45-60 min on CPU
+- Tests whether ScaledSigmoid gates help or hurt on a sequence classification task
+
+### Shakespeare Character Generation LSTM (`LstmCharGen.py`)
+- Character-level next-char prediction on tiny-shakespeare (~1MB)
+- Model: `Embedding(vocab, 64) → CustomLSTM(64, 256, 2 layers) → Linear(256, vocab)`
+- 30 epochs, Adam, CrossEntropyLoss, seq_length=100, batch_size=64
+- ~50-70 min on CPU
+- Tracks loss, char prediction accuracy, weight magnitude + generates text samples
+- 2-layer LSTM tests whether ScaledSigmoid gate effects compound with depth
+
 ### Utility (`util.py`)
 - `replace_sigmoid_with_modified()`: Recursively replaces all `nn.Sigmoid` modules in an existing model with `ScaledSigmoid` — useful for retrofitting pre-trained models
 
@@ -62,6 +85,8 @@ This is a PyTorch-based experimental framework for comparing the standard `nn.Si
 | 7 | 2D Checkerboard (continuous XOR) | 50×50 grid over [0, 2]² | (2, 4, 1) | Dense 2D XOR, 2500 points |
 | — | MNIST digit classification (CNN) | MNIST dataset (28×28 grayscale) | LeNet-5 | Complete — too simple, ~97% for all variants |
 | — | CIFAR-10 classification (CNN) | CIFAR-10 dataset (32×32 RGB) | VGG-style (4 conv + 2 FC) | Active — deeper network on harder task |
+| — | Sequential MNIST (LSTM) | MNIST as 28×28 row sequences | LSTM(28→128, 1 layer) | Tests ScaledSigmoid in LSTM gates |
+| — | Shakespeare char generation (LSTM) | tiny-shakespeare text | LSTM(64→256, 2 layers) | Generative task, 2-layer gate effects |
 
 ## Output Artifacts
 
@@ -74,6 +99,8 @@ This is a PyTorch-based experimental framework for comparing the standard `nn.Si
 python Main.py        # FC network experiments (threshold, pulse wave)
 python LeNet5.py      # LeNet-5 on MNIST (simple, fast)
 python VggCifar10.py  # VGG-style on CIFAR-10 (deeper, harder)
+python LstmSeqMnist.py  # LSTM on Sequential MNIST (~50 min)
+python LstmCharGen.py   # LSTM on Shakespeare text (~60 min)
 ```
 
 Requires: `torch`, `matplotlib`, `torchvision` (for MNIST/LeNet-5 experiment)
