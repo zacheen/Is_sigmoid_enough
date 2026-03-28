@@ -261,18 +261,6 @@ if __name__ == "__main__":
     # node_size = (1, 6, 1)
     # optimizer = optim.Adam
 
-    # < test case 7 >
-    # 2D Checkerboard: continuous-domain XOR over dense 2D grid
-    # Output 1 in top-left & bottom-right quadrants, 0 elsewhere
-    # Unlike discrete XOR (4 points), must generalize saturation across 2500 points
-    # n = 50
-    # x1, x2 = torch.linspace(0, 2, n), torch.linspace(0, 2, n)
-    # grid_x1, grid_x2 = torch.meshgrid(x1, x2, indexing='ij')
-    # X = torch.stack([grid_x1.flatten(), grid_x2.flatten()], dim=1)  # (2500, 2)
-    # Y = (((X[:, 0] < 1) & (X[:, 1] >= 1)) | ((X[:, 0] >= 1) & (X[:, 1] < 1))).float().view(-1, 1)
-    # node_size = (2, 4, 1)
-    # optimizer = optim.Adam
-
     # << settings >>
 
     # 
