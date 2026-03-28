@@ -27,7 +27,7 @@ class SimpleNN(nn.Module):
 # ==========================================
 # 4. Training and Tracking Experiment Function
 # ==========================================
-def train_and_track(model, X, Y, optimizer, epochs=20000, lr=None):
+def train_and_track(model, X, Y, optimizer, epochs=50000, lr=None):
     """
     Train and return the loss and mean absolute value of weights per epoch, 
     to observe whether weights grow excessively.
@@ -228,6 +228,9 @@ if __name__ == "__main__":
     # 2D input, must output 0 or 1 at all 4 corners
     # Hidden layer must create two linear separations in 2D and combine them
     # Forces saturation: all outputs are exactly 0 or 1, non-linear boundary
+    # one solution (seed 42)
+        # Y = sigmoid( -4X*sigmoid(node_out + X) + 4X*sigmoid(node_out - X) + 2X )
+        # node_out = O1*(-2X) + O2*2X
     X = torch.tensor([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
     Y = torch.tensor([[0.0], [1.0], [1.0], [0.0]])
     node_size = (2, 2, 1)
