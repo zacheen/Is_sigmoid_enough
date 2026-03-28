@@ -1,0 +1,77 @@
+============================================================
+Generated Text Samples (seed: 'ROMEO:')
+============================================================
+
+--- Original Sigmoid ---
+ROMEO:
+No, proud attire.
+
+SAMPSON:
+I do beseech you, sir: what this newhep is so laid!
+
+GLOUCESTER:
+Why, in good to the lord hath not the rest:
+And, by your first bear him some other tempers.
+
+KING RICHARD
+...
+
+--- ScaledSigmoid(scale=1.01, shift=-0.005) ---
+ROMEO:
+Out--
+
+GONZALO:
+Ay, mistress: his heirlors from this cause, that Margaret
+By this seat, a virgin, so I were to thy sleep.
+
+SOMERSET:
+O Prosbus, be not remember well
+There in a wife soft at Sincing su
+...
+
+--- ScaledSigmoid(scale=1.05, shift=-0.025) ---
+ROMEO:
+No, my good lord; and I will not come about;
+ourselves will tell the duke till they know; for I must be
+believed me rather how they have a better
+Than thou and presently. I have made me forget,
+Thoug
+...
+
+ourselves will tell the duke till they know; for I must be
+believed me rather how they have a better
+Than thou and presently. I have made me forget,
+Thoug
+...
+
+believed me rather how they have a better
+Than thou and presently. I have made me forget,
+Thoug
+...
+
+Than thou and presently. I have made me forget,
+Thoug
+...
+
+Thoug
+...
+
+...
+
+--- ScaledSigmoid(scale=1.1, shift=-0.05) ---
+
+--- ScaledSigmoid(scale=1.1, shift=-0.05) ---
+ROMEO:
+--- ScaledSigmoid(scale=1.1, shift=-0.05) ---
+ROMEO:
+Of stem, that I may not fear? Farewell, good sir,
+ROMEO:
+Of stem, that I may not fear? Farewell, good sir,
+Of stem, that I may not fear? Farewell, good sir,
+Whose sudden saint and escaped or fears it to
+me.
+
+Third Citizen:
+A miserable for a thousand long,--
+Duding my duty and good morrows the last,
+This i

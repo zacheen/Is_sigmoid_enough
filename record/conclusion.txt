@@ -1,0 +1,3 @@
+ScaledSigmoid is not suitable for gating mechanism
+    since gating mechanism definitly should be 0~100% and usually we don't want to 100% forget or memerize
+        Thus, ScaledSigmoid in this situation is useless and ever harm for LSTM
