@@ -111,6 +111,16 @@ In LSTM gates, the [0, 1] bound is a design feature, not a limitation. ScaledSig
 
 **Conclusion**: The recovery mechanism is beneficial when sigmoid is used as an **activation function**, but harmful when sigmoid is used as a **gate controller** where [0, 1] bounding is intentional.
 
+### Direct Recovery Demo (`DemoRecovery.py`)
+
+A standalone demo that directly tests the recovery mechanism:
+- Task: simple threshold (X > 0.5)
+- All weights intentionally initialized to 50.0 (simulating explosion)
+- Trains with SGD (not Adam, to avoid adaptive LR masking the effect)
+- Expected: sigmoid stays stuck (gradient ≈ 0), ScaledSigmoid recovers (gradient still meaningful)
+
+Run: `python DemoRecovery.py`
+
 ## Applicable Scenarios
 
 | Scenario | Recovery Helpful? | Reason |
