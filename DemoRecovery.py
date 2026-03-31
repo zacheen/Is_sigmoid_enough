@@ -29,9 +29,9 @@ from ScaledSigmoid import ScaledSigmoid
 # ScaledSigmoid OVERSHOOTS the target, creating a restoring force.
 # ==========================================
 
-INIT_WEIGHT = 9.0
+INIT_WEIGHT = 8.5
 LR = 12.0       # Large LR to amplify tiny gradients for visualization
-EPOCHS = 2000
+EPOCHS = 4000
 
 class SingleNeuron(nn.Module):
     def __init__(self, activation_fn):
