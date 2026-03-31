@@ -29,9 +29,9 @@ from ScaledSigmoid import ScaledSigmoid
 # ScaledSigmoid OVERSHOOTS the target, creating a restoring force.
 # ==========================================
 
-INIT_WEIGHT = 8.5
+INIT_WEIGHT = 0.8
 LR = 12.0       # Large LR to amplify tiny gradients for visualization
-EPOCHS = 4000
+EPOCHS = 100
 
 class SingleNeuron(nn.Module):
     def __init__(self, activation_fn):
@@ -51,6 +51,7 @@ def train_single_neuron(activation_fn, x, target, init_w, init_b, lr, epochs):
     model.linear.bias.requires_grad = False  # Freeze bias
 
     criterion = nn.MSELoss()
+    rev_optimizer = optim.SGD(model.parameters(), lr=lr*-10)
     optimizer = optim.SGD(model.parameters(), lr=lr)
 
     w_history = []
@@ -61,13 +62,19 @@ def train_single_neuron(activation_fn, x, target, init_w, init_b, lr, epochs):
     for epoch in range(epochs):
         w_history.append(model.linear.weight.item())
 
-        optimizer.zero_grad()
+        if epoch == 0 :
+            rev_optimizer.zero_grad()
+        else :
+            optimizer.zero_grad()
         out = model(x)
         loss = criterion(out, target)
         loss.backward()
 
         grad_history.append(model.linear.weight.grad.item())
-        optimizer.step()
+        if epoch == 0 :
+            rev_optimizer.step()
+        else :
+            optimizer.step()
 
         loss_history.append(loss.item())
         output_history.append(out.item())
@@ -78,7 +85,7 @@ def train_single_neuron(activation_fn, x, target, init_w, init_b, lr, epochs):
 if __name__ == "__main__":
     # Single data point: x=1, target=0.5
     x = torch.tensor([[1.0]])
-    target = torch.tensor([[0.95]])
+    target = torch.tensor([[0.6]])
 
     # (name, activation, lr_override)
     # Scale=1.5 needs lower lr because its equilibrium (w≈1.6) has large gradient
