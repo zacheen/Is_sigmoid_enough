@@ -29,9 +29,9 @@ from ScaledSigmoid import ScaledSigmoid
 # ScaledSigmoid OVERSHOOTS the target, creating a restoring force.
 # ==========================================
 
-INIT_WEIGHT = 8.0
-LR = 32.0       # Large LR to amplify tiny gradients for visualization
-EPOCHS = 1000
+INIT_WEIGHT = 9.0
+LR = 12.0       # Large LR to amplify tiny gradients for visualization
+EPOCHS = 2000
 
 class SingleNeuron(nn.Module):
     def __init__(self, activation_fn):
@@ -78,7 +78,7 @@ def train_single_neuron(activation_fn, x, target, init_w, init_b, lr, epochs):
 if __name__ == "__main__":
     # Single data point: x=1, target=0.5
     x = torch.tensor([[1.0]])
-    target = torch.tensor([[1.0]])
+    target = torch.tensor([[0.95]])
 
     # (name, activation, lr_override)
     # Scale=1.5 needs lower lr because its equilibrium (w≈1.6) has large gradient
@@ -154,9 +154,9 @@ if __name__ == "__main__":
     ax.grid(True, alpha=0.3)
     ax.set_ylim(bottom=0)
 
-    # 4. GRADIENT DIRECTION (first 500 epochs)
+    # 4. GRADIENT DIRECTION (all epochs)
     ax = axes[1, 1]
-    show_ep = min(500, EPOCHS)
+    show_ep = EPOCHS
     for name, r in results.items():
         ax.plot(r['grad'][:show_ep], label=name, linewidth=2)
     ax.axhline(y=0, color='black', linestyle='-', alpha=0.3)
