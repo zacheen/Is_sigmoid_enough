@@ -30,7 +30,7 @@ from ScaledSigmoid import ScaledSigmoid
 
 INIT_WEIGHT = 0.8
 LR = 10.0       # Large LR to amplify tiny gradients for visualization
-EPOCHS = 130
+EPOCHS = 1300
 
 class SingleNeuron(nn.Module):
     def __init__(self, activation_fn):
@@ -50,7 +50,7 @@ def train_single_neuron(activation_fn, x, target, init_w, init_b, lr, epochs):
     model.linear.bias.requires_grad = False  # Freeze bias
 
     criterion = nn.MSELoss()
-    rev_optimizer = optim.SGD(model.parameters(), lr=lr*-10)
+    rev_optimizer = optim.SGD(model.parameters(), lr=lr*-30)
     optimizer = optim.SGD(model.parameters(), lr=lr)
 
     w_history = []
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     ax.grid(True, alpha=0.3)
 
     plt.suptitle(
-        f"Recovery from Weight Explosion (epoch 0: reverse backprop lr×-10)\n"
+        f"Recovery from Weight Explosion (epoch 0: reverse backprop lr×-30)\n"
         f"Single neuron: y = act(w·x + b), x=1, target={target.item():.2f}, init w={INIT_WEIGHT}, lr={LR}",
         fontsize=13, fontweight='bold'
     )
