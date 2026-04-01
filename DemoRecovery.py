@@ -5,33 +5,32 @@ import matplotlib.pyplot as plt
 from ScaledSigmoid import ScaledSigmoid
 
 # ==========================================
-# Demo: ScaledSigmoid RECOVERY from Exploded Weights
+# Demo: ScaledSigmoid RECOVERY from Weight Explosion
 # ==========================================
-# Simplest possible demo: SINGLE NEURON, no hidden layers.
+# Single neuron: y = activation(w * x + b), bias frozen.
 #
-#   y = activation(w * x + b),  x = 1.0,  target = 1.0
+# Method:
+#   1. Start with normal weight (init_w → output ≈ 0.6)
+#   2. Epoch 0: ONE reverse backprop (lr * -10) → weight explodes
+#   3. Epoch 1+: Normal training → does it recover?
 #
-# Initialize w = 5 (simulating "exploded" weight).
-# At w=5, pre-activation = 5:
+# After explosion, weight is large → output saturated:
 #
 #   Standard sigmoid:
-#     output = sigmoid(5) = 0.993 < 1.0
-#     → error = -0.007 → gradient pushes w UP → w keeps growing
-#     → NEVER recovers, weight keeps exploding
+#     output < target always (sigmoid asymptotically approaches but never reaches target)
+#     → gradient keeps pushing w UP → weight stays stuck or grows further
 #
-#   ScaledSigmoid(1.1, -0.05):
-#     output = 1.1 * sigmoid(5) - 0.05 = 1.043 > 1.0
-#     → error = +0.043 → gradient pushes w DOWN → w decreases
-#     → Equilibrium at w ≈ 3.04 where output = exactly 1.0
-#     → RECOVERS to healthy weight!
+#   ScaledSigmoid:
+#     output > target (overshoots due to scale > 1)
+#     → gradient REVERSES → pushes w DOWN → weight recovers!
 #
-# The key insight: it's not gradient magnitude, it's gradient DIRECTION.
-# ScaledSigmoid OVERSHOOTS the target, creating a restoring force.
+# Key insight: it's not gradient magnitude, it's gradient DIRECTION.
+# ScaledSigmoid overshoots the target, creating a restoring force.
 # ==========================================
 
 INIT_WEIGHT = 0.8
-LR = 12.0       # Large LR to amplify tiny gradients for visualization
-EPOCHS = 100
+LR = 10.0       # Large LR to amplify tiny gradients for visualization
+EPOCHS = 130
 
 class SingleNeuron(nn.Module):
     def __init__(self, activation_fn):
@@ -105,23 +104,31 @@ if __name__ == "__main__":
         results[name] = {
             'w': w_hist, 'loss': loss_hist, 'output': out_hist, 'grad': grad_hist
         }
-        print(f"{name:35s} | w: {INIT_WEIGHT:.1f} → {w_hist[-1]:+.4f} | "
+        exploded_w = w_hist[1] if len(w_hist) > 1 else w_hist[0]
+        final_w = w_hist[-1]
+        print(f"{name:35s} | w: {INIT_WEIGHT:.2f} → [explode:{exploded_w:+.2f}] → {final_w:+.4f} | "
               f"output: {out_hist[-1]:.4f} | loss: {loss_hist[-1]:.6f} | "
-              f"{'RECOVERED ↓' if w_hist[-1] < INIT_WEIGHT - 0.1 else 'STUCK/GROWING ↑'}")
+              f"{'RECOVERED ↓' if final_w < exploded_w - 0.1 else 'STUCK/GROWING ↑'}")
 
     # Calculate theoretical equilibrium points
-    print("\n--- Theoretical Equilibrium (where output = 1.0) ---")
+    target_val = target.item()
+    print(f"\n--- Theoretical Equilibrium (where output = {target_val:.2f}) ---")
     for name, act, _ in configs:
         if isinstance(act, ScaledSigmoid):
-            # scale * sigmoid(w_eq) + shift = 1.0 → sigmoid(w_eq) = (1-shift)/scale
-            sig_val = (1.0 - act.shift) / act.scale
+            # scale * sigmoid(w_eq) + shift = target → sigmoid(w_eq) = (target-shift)/scale
+            sig_val = (target_val - act.shift) / act.scale
             if 0 < sig_val < 1:
                 w_eq = torch.log(torch.tensor(sig_val / (1 - sig_val))).item()
                 print(f"  {name:35s} → w_eq = {w_eq:.4f}")
             else:
                 print(f"  {name:35s} → no finite equilibrium")
         else:
-            print(f"  {name:35s} → w_eq = +∞ (sigmoid never reaches 1.0)")
+            # sigmoid(w_eq) = target → w_eq = ln(target/(1-target))
+            if 0 < target_val < 1:
+                w_eq = torch.log(torch.tensor(target_val / (1 - target_val))).item()
+                print(f"  {name:35s} → w_eq = {w_eq:.4f}")
+            else:
+                print(f"  {name:35s} → w_eq = ±∞")
 
     # ==========================================
     # Plotting
@@ -133,7 +140,8 @@ if __name__ == "__main__":
     for name, r in results.items():
         ax.plot(r['w'], label=name, linewidth=2)
     ax.axhline(y=INIT_WEIGHT, color='gray', linestyle='--', alpha=0.4, label=f'Init w={INIT_WEIGHT}')
-    ax.set_title(f"Weight Recovery: init w={INIT_WEIGHT}", fontsize=12, fontweight='bold')
+    ax.axvline(x=1, color='red', linestyle=':', alpha=0.5, label='Reverse backprop')
+    ax.set_title(f"Weight: init={INIT_WEIGHT} → explode → recover?", fontsize=12, fontweight='bold')
     ax.set_xlabel("Epochs")
     ax.set_ylabel("Weight value")
     ax.legend(fontsize=8)
@@ -143,8 +151,9 @@ if __name__ == "__main__":
     ax = axes[0, 1]
     for name, r in results.items():
         ax.plot(r['output'], label=name, linewidth=2)
-    ax.axhline(y=1.0, color='black', linestyle='--', alpha=0.5, label='Target = 1.0')
-    ax.set_title("Network Output (target = 1.0)")
+    ax.axhline(y=target.item(), color='black', linestyle='--', alpha=0.5, label=f'Target = {target.item():.2f}')
+    ax.axvline(x=1, color='red', linestyle=':', alpha=0.5)
+    ax.set_title(f"Network Output (target = {target.item():.2f})")
     ax.set_xlabel("Epochs")
     ax.set_ylabel("Output")
     ax.legend(fontsize=8)
@@ -154,6 +163,7 @@ if __name__ == "__main__":
     ax = axes[1, 0]
     for name, r in results.items():
         ax.plot(r['loss'], label=name, linewidth=2)
+    ax.axvline(x=1, color='red', linestyle=':', alpha=0.5)
     ax.set_title("Loss (MSE)")
     ax.set_xlabel("Epochs")
     ax.set_ylabel("Loss")
@@ -161,21 +171,21 @@ if __name__ == "__main__":
     ax.grid(True, alpha=0.3)
     ax.set_ylim(bottom=0)
 
-    # 4. GRADIENT DIRECTION (all epochs)
+    # 4. GRADIENT DIRECTION
     ax = axes[1, 1]
-    show_ep = EPOCHS
     for name, r in results.items():
-        ax.plot(r['grad'][:show_ep], label=name, linewidth=2)
+        ax.plot(r['grad'], label=name, linewidth=2)
     ax.axhline(y=0, color='black', linestyle='-', alpha=0.3)
-    ax.set_title(f"Weight Gradient (first {show_ep} epochs)")
+    ax.axvline(x=1, color='red', linestyle=':', alpha=0.5)
+    ax.set_title("Weight Gradient")
     ax.set_xlabel("Epochs")
     ax.set_ylabel("dL/dw\n(+: SGD pushes w down, −: pushes w up)")
     ax.legend(fontsize=8)
     ax.grid(True, alpha=0.3)
 
     plt.suptitle(
-        f"Recovery from Weight Explosion\n"
-        f"Single neuron: y = act(w·x + b), x=1, target=1, init w={INIT_WEIGHT}, lr={LR}",
+        f"Recovery from Weight Explosion (epoch 0: reverse backprop lr×-10)\n"
+        f"Single neuron: y = act(w·x + b), x=1, target={target.item():.2f}, init w={INIT_WEIGHT}, lr={LR}",
         fontsize=13, fontweight='bold'
     )
     plt.tight_layout()
