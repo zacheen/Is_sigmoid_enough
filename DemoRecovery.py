@@ -50,7 +50,7 @@ def train_single_neuron(activation_fn, x, target, init_w, init_b, lr, epochs):
     model.linear.bias.requires_grad = False  # Freeze bias
 
     criterion = nn.MSELoss()
-    rev_optimizer = optim.SGD(model.parameters(), lr=lr*-30)
+    rev_optimizer = optim.SGD(model.parameters(), lr=lr*30, maximize=True)
     optimizer = optim.SGD(model.parameters(), lr=lr)
 
     w_history = []
