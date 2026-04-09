@@ -223,6 +223,10 @@ if __name__ == "__main__":
     # node_size = (1, 3, 1)
     # optimizer = optim.Adam
 
+    # why previous test case won't explode?
+        # because of the floating point precision
+        # sigmoid(40) would be 1.0 instead of 0.99999...
+
     # < test case 4 >
     # XOR: classic non-linearly separable problem
     # 2D input, must output 0 or 1 at all 4 corners
